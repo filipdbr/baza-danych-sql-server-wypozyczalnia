@@ -52,7 +52,10 @@ VALUES
 ('£y¿wiarstwo', 0),
 ('Tenis', 0),
 ('Kolarstwo', 1),
-('Wspinaczka', 1)
+('Wspinaczka', 1),
+('Zimowe', 0),
+('Letnie', 0),
+('Sporty Olimpijskie', 0)
 
 INSERT INTO Kategorie.KategoriaPoraRoku (kategoria_id, pora_roku_id)
 VALUES
@@ -145,7 +148,7 @@ BULK INSERT Sprzet.SprzetKategoria
 FROM 'C:\data\sprzet_kategoria.csv'
 WITH (
     DATAFILETYPE = 'char',
-    FIELDTERMINATOR = ',', 
+    FIELDTERMINATOR = ';', 
     ROWTERMINATOR = '\n',  
     CODEPAGE = '65001',     -- Kodowanie UTF-8
     FIRSTROW = 2,
@@ -164,7 +167,7 @@ WITH (
 	FIRE_TRIGGERS			-- chcê, aby triggery zadzia³a³y ju¿ podczas bulk insert 
 );
 
--- wstawiam dane do encji Zamówienia
+-- wstawiam dane do encji Zamówienia. Dane z przedzia³u 2023-06-01 do 2024-06-01
 BULK INSERT Zamowienia.Zamowienie
 FROM 'C:\data\zamowienia.csv'
 WITH (

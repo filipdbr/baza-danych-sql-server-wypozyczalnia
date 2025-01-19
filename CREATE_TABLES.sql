@@ -336,10 +336,13 @@ CREATE TABLE Kategorie.Kategoria (
 	-- Atrybuty
     kategoria_id INT IDENTITY(1,1) NOT NULL,
     nazwa NVARCHAR(50) NOT NULL,
-    wymaga_patentu BIT NOT NULL,
+    uprawnienie_id INT,
 
     -- Klucze
-    CONSTRAINT Kategoria_pk PRIMARY KEY (kategoria_id)
+    CONSTRAINT Kategoria_pk PRIMARY KEY (kategoria_id),
+	CONSTRAINT Uprawnienie_Kategoria FOREIGN KEY (uprawnienie_id) REFERENCES Sprzet.Uprawnienie(uprawnienie_id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
 );
 
 -- Encja asocjacyjna dla encji 'Sprzet' i 'Kategoria'. Pozwala obs³u¿yæ relacjê wiele-do-wielu. Dodatkowo wprowadza ranking.
