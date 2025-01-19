@@ -207,7 +207,7 @@ CREATE TABLE Sprzet.Egzemplarz (
 );
 
 -- encja 'Reklamacja'
-CREATE TABLE Sprzet.Reklamacja(
+CREATE TABLE Serwis.Reklamacja(
 	
 	-- Atrybuty
 	reklamacja_id INT IDENTITY(1,1) NOT NULL,
@@ -223,7 +223,7 @@ CREATE TABLE Sprzet.Reklamacja(
 );
 
 -- encja zawieraj¹ca statusy reklamacji
-CREATE TABLE Sprzet.StatusReklamacji(
+CREATE TABLE Serwis.StatusReklamacji(
 
 	-- Atrybuty
 	status_reklamacji_id INT IDENTITY (1,1) NOT NULL,
@@ -235,7 +235,7 @@ CREATE TABLE Sprzet.StatusReklamacji(
 );
 
 -- encja asocjacyjna dla encji Reklamacja i Egzemplarz. Konieczna, poniewa¿ jedna reklamacja mo¿e dotyczyæ wielu egzemplarzy
-CREATE TABLE Sprzet.ReklamacjaEgzemplarz(
+CREATE TABLE Serwis.ReklamacjaEgzemplarz(
 
 	-- Atrybuty
 	reklamacja_egzemplarz_id INT IDENTITY (1,1) NOT NULL,
@@ -245,20 +245,20 @@ CREATE TABLE Sprzet.ReklamacjaEgzemplarz(
 
 	-- Klucze
 	CONSTRAINT ReklamacjaEgzemplarz_pk PRIMARY KEY (reklamacja_egzemplarz_id),
-	CONSTRAINT Reklamacja_ReklamacjaEgzemplarz_fk FOREIGN KEY (reklamacja_id) REFERENCES Sprzet.Reklamacja(reklamacja_id)
+	CONSTRAINT Reklamacja_ReklamacjaEgzemplarz_fk FOREIGN KEY (reklamacja_id) REFERENCES Serwis.Reklamacja(reklamacja_id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,
 	CONSTRAINT Egzemplarz_ReklamacjaEgzemplarz_fk FOREIGN KEY (egzemplarz_id) REFERENCES Sprzet.Egzemplarz(egzemplarz_id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,
-	CONSTRAINT StatusReklamacji_ReklamacjaEgzemplarz_fk FOREIGN KEY (status_reklamacji) REFERENCES Sprzet.StatusReklamacji(status_reklamacji_id)
+	CONSTRAINT StatusReklamacji_ReklamacjaEgzemplarz_fk FOREIGN KEY (status_reklamacji) REFERENCES Serwis.StatusReklamacji(status_reklamacji_id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,
 
 );
 
 -- encja 'Naprawa'
-CREATE TABLE Sprzet.Naprawa (
+CREATE TABLE Serwis.Naprawa (
     
 	-- Atrybuty
     naprawa_id INT IDENTITY(1,1) NOT NULL,
@@ -267,14 +267,14 @@ CREATE TABLE Sprzet.Naprawa (
     powod VARCHAR(255),
     koszt_naprawy DECIMAL(8,2) CHECK (koszt_naprawy >= 0.00) DEFAULT NULL,
     egzemplarz_id INT NOT NULL,
-	id_reklamacja_egzemplarz INT
+	reklamacja_egzemplarz_id INT
 
     -- Klucze
     CONSTRAINT Naprawa_pk PRIMARY KEY (naprawa_id),
     CONSTRAINT Egzemplarz_Naprawa_fk FOREIGN KEY (egzemplarz_id) REFERENCES Sprzet.Egzemplarz(egzemplarz_id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,
-	CONSTRAINT ReklamacjaEgzemplarz_Naprawa_fk FOREIGN KEY (id_reklamacja_egzemplarz) REFERENCES Sprzet.ReklamacjaEgzemplarz(id_reklamacja_egzemplarz)
+	CONSTRAINT ReklamacjaEgzemplarz_Naprawa_fk FOREIGN KEY (reklamacja_egzemplarz_id) REFERENCES Serwis.ReklamacjaEgzemplarz(reklamacja_egzemplarz_id)
 		ON UPDATE NO ACTION
 		ON DELETE NO ACTION,
 

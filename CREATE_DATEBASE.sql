@@ -58,4 +58,6 @@ CREATE SCHEMA Zamowienia;
 GO
 CREATE SCHEMA Kategorie;
 GO
+CREATE SCHEMA Serwis;
+GO
 

@@ -77,7 +77,7 @@ VALUES
 ('Producent D', 'adidas@producentd.org', '678945321', 'Niemiecki'),
 ('Producent E', 'bienchi@prodE.eu', '789654123', N'W³oski');
 
-INSERT INTO Sprzet.StatusReklamacji (nazwa)
+INSERT INTO Serwis.StatusReklamacji (nazwa)
 VALUES
 ('naprawiono'),
 ('odrzucono'),
@@ -188,7 +188,7 @@ WITH (
 );
 
 -- encja Reklamacje
-BULK INSERT Sprzet.Reklamacja
+BULK INSERT Serwis.Reklamacja
 FROM 'C:\data\reklamacje.csv'
 WITH (
 	DATAFILETYPE = 'char',
@@ -199,7 +199,7 @@ WITH (
 );
 
 -- encja Reklamacje
-BULK INSERT Sprzet.ReklamacjaEgzemplarz
+BULK INSERT Serwis.ReklamacjaEgzemplarz
 FROM 'C:\data\reklamacje_szczegolowo.csv'
 WITH (
 	DATAFILETYPE = 'char',

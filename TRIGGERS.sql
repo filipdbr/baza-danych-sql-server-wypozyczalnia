@@ -49,7 +49,7 @@ BEGIN
     END;
 END;
 
-
+GO
 
 -- Automatyczne dodawanie sprzêtu do tabeli 'SprzetProfesjonalny' w przypadku wprowadzenia 1 w polu "profesjonalny"
 CREATE TRIGGER trg_Autododatnie_Profesjonalny
@@ -75,7 +75,7 @@ END;
 GO
 
 -- Wyzwalacz kontroluj¹cy, czy nie przekraczamy maksymalnego zamówienia, które wynosi 5 egemplarzy
-CREATE TRIGGER trg_Max_Zamowienie
+CREATE TRIGGER trg_maksymalne_zamowienie
 ON Zamowienia.ZamowienieEgzemplarz
 AFTER INSERT, UPDATE
 AS

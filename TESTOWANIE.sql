@@ -3,7 +3,7 @@ VALUES (539.63, 20, 6, '2023-04-19')
 
 
 select *
-from Zamowienia.Zamowienie
+from Sprzet.Sprzet
 
 select
 	z.zamowienie_id,
