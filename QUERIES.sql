@@ -1,19 +1,26 @@
 ﻿USE Wypozyczalnia;
 GO
 
--- Zapytania określone w projekcie:
+-- Zapytania określone w projekcie. Wykonam je w postaci procedur składowanych. W ten spsób użytkownik będzie mógł w łatwy sposób wywołać potrzebne informacje. 
+-- Jednocześnie zwiększe bezpieczeństwo i integralność danych, nie dając użytkownikowi bezpośredniego dostępu do bazy.
 
 -- 1. wybór pracownika miesiąca czyli takiego, który obsłużył najwięcej zamówień w danym okresie czasu.
-SELECT
-    TOP 1 p.pracownik_id AS ID_Pracownika,
-    CONCAT(o.imie, ' ', o.nazwisko) AS Pracownik,
-    COUNT(z.zamowienie_id) AS 'Liczba obsłużonych zamówień'
-FROM Osoby.Pracownik AS p
-JOIN Zamowienia.Zamowienie AS z ON z.pracownik_id = p.pracownik_id
-JOIN Osoby.Osoba AS o ON o.osoba_id = p.osoba_id
-WHERE z.data_zamowienia BETWEEN '2023-06-01' AND '2023-06-30'  -- zakres dat: czerwiec 2023
-GROUP BY p.pracownik_id, o.imie, o.nazwisko
-ORDER BY COUNT(z.zamowienie_id) DESC;  
+CREATE PROCEDURE Osoby.PracownikMiesiaca
+	@Od date,
+	@Do date
+AS
+BEGIN
+	SELECT
+		TOP 1 p.pracownik_id AS ID_Pracownika,
+		CONCAT(o.imie, ' ', o.nazwisko) AS Pracownik,
+		COUNT(z.zamowienie_id) AS N'Liczba zamówień'
+	FROM Osoby.Pracownik AS p
+	JOIN Zamowienia.Zamowienie AS z ON z.pracownik_id = p.pracownik_id
+	JOIN Osoby.Osoba AS o ON o.osoba_id = p.osoba_id
+	WHERE z.data_zamowienia BETWEEN @Od AND @Do  -- zakres dat ustalony przez parametr
+	GROUP BY p.pracownik_id, o.imie, o.nazwisko
+	ORDER BY COUNT(z.zamowienie_id) DESC; 
+END;
 
 -- 2. generowanie raportów o zamówieniach danego klienta w zadanym okresie czasu.
 SELECT
@@ -33,7 +40,7 @@ SELECT
 FROM Sprzet.SprzetKategoria sk
 JOIN Sprzet.Sprzet s ON s.sprzet_id = sk.sprzet_id
 JOIN Kategorie.Kategoria k ON k.kategoria_id = sk.kategoria_id
-WHERE sk.kategoria_id = 1
+WHERE sk.kategoria_id = 9
 ORDER BY sk.ranking ASC;
 
 -- 4. znalezienie sprzętu, które zajmuje średnio najwyższe miejsce we wszystkich rankingach
@@ -63,5 +70,24 @@ ORDER BY p.pracownik_id
 
 /*7. otrzymanie opisu dla każdego rodzaju sprzętu, przy czym dla sprzętu górskiego opis ma uwzględniać nazwę, 
 nazwę producenta, oraz porę roku w jakim sprzętu można używać, natomiast dla wodnego - nazwę, nazwę producenta, oraz informację o patencie*/
-SELECT *
-FROM Sprzet.Sprzet
+SELECT
+    s.nazwa AS Sprzęt,
+    p.nazwa AS Producent,
+    k.nazwa AS Kategoria,
+    CASE
+        WHEN k.kategoria_id = 8 THEN
+            pr.nazwa -- Pora roku
+        WHEN k.kategoria_id = 9 THEN
+            u.nazwa -- Uprawnienie
+        ELSE
+            NULL
+    END AS Opis
+FROM Sprzet.Sprzet s
+JOIN Sprzet.Producent p ON s.producent_id = p.producent_id
+JOIN Sprzet.SprzetKategoria sk ON s.sprzet_id = sk.sprzet_id
+JOIN Kategorie.Kategoria k ON sk.kategoria_id = k.kategoria_id
+LEFT JOIN Sprzet.Uprawnienie u ON u.uprawnienie_id = k.uprawnienie_id -- LEFT JOIN dla uprawnień
+LEFT JOIN Kategorie.KategoriaPoraRoku kpr ON kpr.kategoria_id = k.kategoria_id -- LEFT JOIN dla powiązań kategoria-pora roku
+LEFT JOIN Kategorie.PoraRoku pr ON pr.pora_roku_id = kpr.pora_roku_id -- LEFT JOIN dla pór roku
+WHERE k.kategoria_id IN (8, 9)
+ORDER BY k.nazwa, s.nazwa;

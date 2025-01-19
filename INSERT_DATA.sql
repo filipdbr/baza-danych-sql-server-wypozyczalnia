@@ -37,7 +37,7 @@ VALUES
 ('Patent ¯eglarski'),
 ('Uprawnienia wspinaczkowe'),
 ('Uprawnienia rowerowe'),
-('Pozwolenie na broñ');
+('Pozwolenie na broñ')
 
 INSERT INTO Kategorie.PoraRoku (nazwa) VALUES
 ('Wiosna'),
@@ -46,31 +46,31 @@ INSERT INTO Kategorie.PoraRoku (nazwa) VALUES
 ('Zima'),
 (N'Przedwioœnie');
 
-INSERT INTO Kategorie.Kategoria (nazwa, wymaga_patentu)
+SET IDENTITY_INSERT Kategorie.Kategoria ON;
+INSERT INTO Kategorie.Kategoria (kategoria_id, nazwa, uprawnienie_id)
 VALUES
-('Narciarstwo', 0),
-('£y¿wiarstwo', 0),
-('Tenis', 0),
-('Kolarstwo', 1),
-('Wspinaczka', 1),
-('Zimowe', 0),
-('Letnie', 0),
-('Sporty Olimpijskie', 0)
+(1,'Narciarstwo', NULL),
+(2,'¯eglarstwo', NULL),
+(3,'Tenis', NULL),
+(4,'Kolarstwo', NULL),
+(5,'Wspinaczka', NULL),
+(6,'Letnie', NULL),
+(7,'Sporty Olimpijskie', NULL),
+(8,'Górski', NULL),
+(9,'Wodny', 2);
+SET IDENTITY_INSERT Kategorie.Kategoria OFF;
 
-INSERT INTO Kategorie.KategoriaPoraRoku (kategoria_id, pora_roku_id)
-VALUES
-(1,4),
-(1,3),
-(1,5),
-(1,1),
-(2,4),
-(3,1),
-(3,2),
-(3,3),
-(4,1),
-(4,2),
-(4,3),
-(5,2)
+BULK INSERT Kategorie.KategoriaPoraRoku
+FROM 'C:\data\poryroku_kat.csv'
+WITH (
+    DATAFILETYPE = 'char',
+    FIELDTERMINATOR = ';', 
+    ROWTERMINATOR = '\n',  
+    CODEPAGE = '65001',    -- kodowanie UTF-8
+    FIRSTROW = 2 ,
+	FIRE_TRIGGERS
+);
+
 
 INSERT INTO Sprzet.Producent (nazwa, email, telefon, jezyk) 
 VALUES
