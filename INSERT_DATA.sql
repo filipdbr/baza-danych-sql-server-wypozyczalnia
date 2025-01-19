@@ -209,3 +209,13 @@ WITH (
     FIRSTROW = 2
 );
 
+-- encja Naprawa
+BULK INSERT Serwis.Naprawa
+FROM 'C:\data\naprawy.csv'
+WITH (
+	DATAFILETYPE = 'char',
+    FIELDTERMINATOR = ';', 
+    ROWTERMINATOR = '\n',  
+    CODEPAGE = '65001',   
+    FIRSTROW = 2
+);
