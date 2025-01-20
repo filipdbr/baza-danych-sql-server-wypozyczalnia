@@ -75,7 +75,49 @@ BEGIN
 END;
 
 -- 5. dodanie nowego sprzętu (z podaniem nazwy i typu)
+CREATE PROCEDURE Sprzet.DodajSprzet
+    @Nazwa NVARCHAR(100),
+    @Profesjonalny BIT,
+    @Typ NVARCHAR(20),
+    @CenaZaDobe DECIMAL(8,2),
+    @ProducentId INT,
+    @Rabat DECIMAL(5,2) = 0.00,
+    @Opis NVARCHAR(255) = NULL,
+    @KategoriaId INT,
+    @Ranking INT
+AS
+BEGIN
+    BEGIN TRY
+        -- Dodanie nowego sprzętu do tabeli Sprzet.Sprzet
+        INSERT INTO Sprzet.Sprzet (nazwa, cena_za_dobe, profesjonalny, rabat, opis, producent_id)
+        VALUES (@Nazwa, @CenaZaDobe, @Profesjonalny, @Rabat, @Opis, @ProducentId);
 
+        -- Pobranie ID ostatnio dodanego sprzętu
+        DECLARE @SprzetId INT;
+        SET @SprzetId = SCOPE_IDENTITY();
+
+        -- Powiązanie sprzętu z kategorią
+        IF (@KategoriaId IS NOT NULL)
+        BEGIN
+            INSERT INTO Sprzet.SprzetKategoria (sprzet_id, kategoria_id, ranking)
+            VALUES (@SprzetId, @KategoriaId, @Ranking);
+        END
+    END TRY
+    BEGIN CATCH
+        -- Obsługa błędów
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+        RETURN;
+    END CATCH
+END;
 
 -- 6. wygenerowanie zestawienia wszystkich pracowników i ich szefów
 CREATE PROCEDURE Osoby.ZestawieniePracownikow
@@ -104,19 +146,23 @@ BEGIN
 		k.nazwa AS Kategoria,
 		CASE
 			WHEN k.kategoria_id = 8 THEN
-				pr.nazwa -- Pora roku
-			WHEN k.kategoria_id = 9 THEN
-				u.nazwa -- Uprawnienie
+				pr.nazwa -- nazwa pory roku jeżeli kategoria = 8 (czyli górski)
 			ELSE
 				NULL
-		END AS Opis
+		END AS 'Pora roku',
+		CASE
+			WHEN k.kategoria_id = 9 THEN
+				u.nazwa -- nazwa patentu dla kategorii 9 (wodny)
+			ELSE
+				NULL
+		END AS Patent
 	FROM Sprzet.Sprzet s
 	JOIN Sprzet.Producent p ON s.producent_id = p.producent_id
 	JOIN Sprzet.SprzetKategoria sk ON s.sprzet_id = sk.sprzet_id
 	JOIN Kategorie.Kategoria k ON sk.kategoria_id = k.kategoria_id
-	LEFT JOIN Sprzet.Uprawnienie u ON u.uprawnienie_id = k.uprawnienie_id -- LEFT JOIN dla uprawnień
-	LEFT JOIN Kategorie.KategoriaPoraRoku kpr ON kpr.kategoria_id = k.kategoria_id -- LEFT JOIN dla powiązań kategoria-pora roku
-	LEFT JOIN Kategorie.PoraRoku pr ON pr.pora_roku_id = kpr.pora_roku_id -- LEFT JOIN dla pór roku
+	LEFT JOIN Sprzet.Uprawnienie u ON u.uprawnienie_id = k.uprawnienie_id 
+	LEFT JOIN Kategorie.KategoriaPoraRoku kpr ON kpr.kategoria_id = k.kategoria_id 
+	LEFT JOIN Kategorie.PoraRoku pr ON pr.pora_roku_id = kpr.pora_roku_id
 	WHERE k.kategoria_id IN (8, 9)
 	ORDER BY k.nazwa, s.nazwa;
 END;
