@@ -66,45 +66,52 @@ BEGIN
 	SELECT
 		s.sprzet_id AS ID,
 		s.nazwa AS nazwa_artykuły,
-		FORMAT(AVG(CAST(sk.ranking AS decimal(10,4))), 'N2') AS sredni_ranking
+		FORMAT(AVG(CAST(sk.ranking AS decimal(10,4))), 'N2') AS sredni_ranking -- wprowadzam nieco bardziej czytelne formatowanie. Jednak rzutuje to decimal na varchar.
 	FROM Sprzet.SprzetKategoria sk
 	JOIN Sprzet.Sprzet s ON s.sprzet_id = sk.sprzet_id
 	JOIN Kategorie.Kategoria k ON k.kategoria_id = sk.kategoria_id
 	GROUP BY s.sprzet_id, s.nazwa
-	ORDER BY AVG(CAST(sk.ranking AS decimal(10,4))) ASC;
+	ORDER BY AVG(CAST(sk.ranking AS decimal(10,4))) ASC; -- w celu poprawnego działania, eliminuję funkcję FORMAT() która powodowała rzutowanie
 END;
 
+GO 
+
 -- 5. dodanie nowego sprzętu (z podaniem nazwy i typu)
+-- Procedurę projektuję transakcyjnie w celu zapewnienia integralności danych
 CREATE PROCEDURE Sprzet.DodajSprzet
     @Nazwa NVARCHAR(100),
     @Profesjonalny BIT,
     @Typ NVARCHAR(20),
     @CenaZaDobe DECIMAL(8,2),
     @ProducentId INT,
-    @Rabat DECIMAL(5,2) = 0.00,
-    @Opis NVARCHAR(255) = NULL,
+    @Rabat DECIMAL(5,2) = 0.00,		-- domyślnie 0.00
+    @Opis NVARCHAR(255) = NULL,		-- domyślnie NULL
     @KategoriaId INT,
     @Ranking INT
 AS
 BEGIN
-    BEGIN TRY
-        -- Dodanie nowego sprzętu do tabeli Sprzet.Sprzet
-        INSERT INTO Sprzet.Sprzet (nazwa, cena_za_dobe, profesjonalny, rabat, opis, producent_id)
-        VALUES (@Nazwa, @CenaZaDobe, @Profesjonalny, @Rabat, @Opis, @ProducentId);
+	BEGIN TRANSACTION -- chcę, aby wykonały się wszystkie instrukcje albo żadna
+		BEGIN TRY
+				-- Dodanie nowego sprzętu do tabeli Sprzet.Sprzet
+				INSERT INTO Sprzet.Sprzet (nazwa, cena_za_dobe, profesjonalny, rabat, opis, producent_id)
+				VALUES (@Nazwa, @CenaZaDobe, @Profesjonalny, @Rabat, @Opis, @ProducentId);
 
-        -- Pobranie ID ostatnio dodanego sprzętu
-        DECLARE @SprzetId INT;
-        SET @SprzetId = SCOPE_IDENTITY();
+				-- Pobranie ID ostatnio dodanego sprzętu
+				DECLARE @SprzetId INT;
+				SET @SprzetId = SCOPE_IDENTITY();	-- pobieram ID sprzętu wstawionego powyżej
 
-        -- Powiązanie sprzętu z kategorią
-        IF (@KategoriaId IS NOT NULL)
-        BEGIN
-            INSERT INTO Sprzet.SprzetKategoria (sprzet_id, kategoria_id, ranking)
-            VALUES (@SprzetId, @KategoriaId, @Ranking);
-        END
-    END TRY
+				-- dodaje sprzęt do tabeli SprzetKategoria w celu nadania mu kategorii
+				IF (@KategoriaId IS NOT NULL)
+				BEGIN
+					INSERT INTO Sprzet.SprzetKategoria (sprzet_id, kategoria_id, ranking)
+					VALUES (@SprzetId, @KategoriaId, @Ranking);
+				END
+			COMMIT TRANSACTION
+		END TRY
     BEGIN CATCH
-        -- Obsługa błędów
+		ROLLBACK TRANSACTION -- cofam transakcję, jeżeli wystąpił chodziaż jeden błąd
+        
+		-- obsługa błędów
         DECLARE @ErrorMessage NVARCHAR(4000);
         DECLARE @ErrorSeverity INT;
         DECLARE @ErrorState INT;
@@ -130,13 +137,16 @@ BEGIN
 		CONCAT(o2.imie, ' ', o2.nazwisko) AS przelozony
 	FROM Osoby.Pracownik p
 	JOIN Osoby.Osoba o ON o.osoba_id = p.osoba_id
+	-- self join z tabelą pracownik w celu uzyskania danych o przełożonym
 	LEFT JOIN Osoby.Pracownik p2 ON p2.pracownik_id = p.przelozony_id
+	-- ponowny join z tabelą osoba aby pobrać dane osobowe przełożonego
 	LEFT JOIN Osoby.Osoba o2 ON p2.osoba_id = o2.osoba_id
 	ORDER BY p.pracownik_id;
 END;
 
 /*7. otrzymanie opisu dla każdego rodzaju sprzętu, przy czym dla sprzętu górskiego opis ma uwzględniać nazwę, 
-nazwę producenta, oraz porę roku w jakim sprzętu można używać, natomiast dla wodnego - nazwę, nazwę producenta, oraz informację o patencie*/
+nazwę producenta, oraz porę roku w jakim sprzętu można używać, natomiast dla wodnego - nazwę, nazwę producenta, oraz informację o patencie
+Komentarz: nie dodaję obsługi błedów, ponieważ nie spodziewam się, żeby wystąpiły. Nie mniej w prawdziwym projekcie, należałoby to dodać*/
 CREATE PROCEDURE Sprzet.OpisSprzetu
 AS
 BEGIN
