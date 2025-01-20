@@ -42,12 +42,6 @@ GO
 -- utworzenie u¿ytkownika
 CREATE USER admin_wypozyczalnia FOR LOGIN admin_wypozyczalnia;
 
--- przydzielenie uprawnieñ (nadaje wszystkie uprawnienia)
-GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::dbo TO admin_wypozyczalnia;
-
--- Przydzielenie roli db_owner u¿ytkownikowi
-ALTER ROLE db_owner ADD MEMBER admin_wypozyczalnia;
-
 -- tworzê schematy
 GO
 CREATE SCHEMA Osoby;
@@ -61,3 +55,13 @@ GO
 CREATE SCHEMA Serwis;
 GO
 
+-- przydzielenie uprawnieñ do schematów
+GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::Osoby TO admin_wypozyczalnia;
+GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::Sprzet TO admin_wypozyczalnia;
+GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::Zamowienia TO admin_wypozyczalnia;
+GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::Kategorie TO admin_wypozyczalnia;
+GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::Serwis TO admin_wypozyczalnia;
+
+-- przydzielenie u¿ytkownika admin_wypozyczalnia do roli db_owner
+ALTER ROLE db_owner ADD MEMBER admin_wypozyczalnia;
+GO

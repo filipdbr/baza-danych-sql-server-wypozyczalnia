@@ -10,11 +10,11 @@ ON Osoby.Pracownik
 AFTER INSERT, UPDATE
 AS
 BEGIN
-    -- Sprawdzenie, czy wiêcej ni¿ jeden pracownik ma stanowisko_id = 1 i przelozony_id IS NULL
+    -- Sprawdzenie, czy wiêcej ni¿ jeden pracownik ma stanowisko_id = 1
     IF EXISTS (
         SELECT 1
         FROM Osoby.Pracownik
-        WHERE stanowisko_id = 1 AND przelozony_id IS NULL
+        WHERE stanowisko_id = 1
         GROUP BY stanowisko_id
         HAVING COUNT(*) > 1
     )
@@ -84,9 +84,9 @@ BEGIN
     DECLARE @ilosc INT;
     
     -- Sprawdzam liczbê egzemplarzy przypisanych do tego zamówienia
-    SELECT @ilosc = COUNT(DISTINCT egzemplarz_id) -- Liczymy ró¿ne egzemplarze
+    SELECT @ilosc = COUNT(egzemplarz_id) -- Liczymy ró¿ne egzemplarze
     FROM Zamowienia.ZamowienieEgzemplarz
-    WHERE zamowienie_id IN (SELECT zamowienie_id FROM inserted); -- U¿ywamy zamowienie_id z danych wstawianych/aktualizowanych
+    WHERE zamowienie_id IN (SELECT zamowienie_id FROM inserted); -- u¿ywam zamowienie_id z danych wstawianych/aktualizowanych
 
     -- Jeœli liczba egzemplarzy przekracza 5, cofam transakcjê
     IF @ilosc > 5
@@ -121,7 +121,7 @@ END;
 GO
 
 
--- Pomys³y i æwiczenia: 
+-- Pomys³y: 
 -- trigger automarycznie ustawiaj¹cy datê zwortu
 -- trigger dla zmiany statusu egzemplarz na wypo¿yczony
 -- trigger dla automatycznego ustawienia data_zgloszenia w tabeli Naprawa

@@ -9,7 +9,7 @@ WITH (
     FIRSTROW = 2,           -- pomijam nag³ówek
     FIELDTERMINATOR = ',',  -- serparator kolumn
     ROWTERMINATOR = '\n',   -- separator wierszy 
-	FIRE_TRIGGERS
+	FIRE_TRIGGERS			-- chcê aby wyzwalacze dzia³a³y w trakcie importu
 );
 
 -- wsatwiam dane do tabeli poprzez polecenie DML
