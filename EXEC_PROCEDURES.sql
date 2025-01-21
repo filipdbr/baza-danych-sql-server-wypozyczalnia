@@ -2,13 +2,13 @@ USE Wypozyczalnia;
 GO
 
 -- Zadanie 1: wywo³ujê pracedurê sk³adowan¹ PracownikMIesi¹ca.
-EXEC Osoby.PracownikMiesiaca @Od = '2023-07-01', @Do = '2023-07-30';
+EXEC Osoby.PracownikMiesiaca @Od = '2023-07-01', @Do = '2023-07-31';
 
 -- Zadanie 2: procedura sk³adowana Zamówienia Klienta. Umo¿liwia generowanie raportów o zamówieniach danego klienta w zadanym okresie czasu.
-EXEC Zamowienia.ZamowieniaKlienta @KlientId = 44, @Od = '2023-06-01', @Do = '2024-06-01';
+EXEC Zamowienia.ZamowieniaKlienta @KlientId = 45, @Od = '2023-06-01', @Do = '2024-06-01';
 
 -- Zadanie 3: wyœwietlenie rankingu sprzêtu w danej kategorii, w tym przypadku kategoria o id 8, czyli 'wodny'
-EXEC Sprzet.Ranking 8;
+EXEC Sprzet.Ranking 7;
 
 -- Zadanie 4: znalezienie sprzêtu, które zajmuje œrednio najwy¿sze miejsce we wszystkich rankingach. W tym przypadku brak parametrów
 EXEC Sprzet.AvgRanking;

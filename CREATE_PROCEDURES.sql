@@ -55,7 +55,7 @@ BEGIN
 	FROM Sprzet.SprzetKategoria sk
 	JOIN Sprzet.Sprzet s ON s.sprzet_id = sk.sprzet_id
 	JOIN Kategorie.Kategoria k ON k.kategoria_id = sk.kategoria_id
-	WHERE sk.kategoria_id = 9
+	WHERE sk.kategoria_id = @KategoriaId
 	ORDER BY sk.ranking ASC;
 END;
 
