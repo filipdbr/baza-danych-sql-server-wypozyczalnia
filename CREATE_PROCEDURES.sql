@@ -59,6 +59,8 @@ BEGIN
 	ORDER BY sk.ranking ASC;
 END;
 
+GO 
+
 -- 4. znalezienie sprzętu, które zajmuje średnio najwyższe miejsce we wszystkich rankingach
 CREATE PROCEDURE Sprzet.AvgRanking
 AS
@@ -126,6 +128,8 @@ BEGIN
     END CATCH
 END;
 
+GO
+
 -- 6. wygenerowanie zestawienia wszystkich pracowników i ich szefów
 CREATE PROCEDURE Osoby.ZestawieniePracownikow
 AS
@@ -144,6 +148,7 @@ BEGIN
 	ORDER BY p.pracownik_id;
 END;
 
+GO
 /*7. otrzymanie opisu dla każdego rodzaju sprzętu, przy czym dla sprzętu górskiego opis ma uwzględniać nazwę, 
 nazwę producenta, oraz porę roku w jakim sprzętu można używać, natomiast dla wodnego - nazwę, nazwę producenta, oraz informację o patencie
 Komentarz: nie dodaję obsługi błedów, ponieważ nie spodziewam się, żeby wystąpiły. Nie mniej w prawdziwym projekcie, należałoby to dodać*/
