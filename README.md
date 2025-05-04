@@ -32,9 +32,20 @@ Celem projektu było zaprojektowanie i zaimplementowanie relacyjnej bazy danych 
 
 Projekt został zrealizowany w **SQL Server**, a do implementacji użyto języka SQL. Struktura oraz dane zostały przygotowane w sposób umożliwiający ich łatwe rozszerzenie i modyfikację.
 
+## Notebook z opisem projektu
+
+W pliku `Projekt_Baza_Danych_Wypozyczalnia_Sprzetu.ipynb` [(kliknij tutaj aby zobaczyć)](Projekt_Baza_Danych_Wypozyczalnia_Sprzetu.ipynb) znajduje się szczegółowy opis projektu z przykładami zapytań SQL, komentarzami i wizualizacją struktury bazy danych. Notebook ten zawiera krok po kroku:
+
+- opis założeń projektowych,
+- szczegóły implementacji,
+- przykładowe zapytania i ich wyniki,
+- omówienie funkcjonalności biznesowych.
+
+Może służyć jako dokumentacja oraz przewodnik po całym projekcie.
+
 ## Autor
 
-**Filip Dąbrowski**, student Informatyki Stosowanej na Politechnice Warszawskiej.
+Filip Dąbrowski
 
 ## Licencja
 
