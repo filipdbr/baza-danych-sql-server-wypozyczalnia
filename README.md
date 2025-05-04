@@ -23,10 +23,10 @@ Celem projektu było zaprojektowanie i zaimplementowanie relacyjnej bazy danych 
 ## Schematy bazy danych
 
 ### Model Konceptualny
-![Model Konceptualny](https://raw.githubusercontent.com/filipdbr/bazy_danych_projekt_zaliczeniowy/main/wypozyczalnia_model_konceptualny.png)
+![Model Konceptualny](/docs/wypozyczalnia_model_konceptualny.png)
 
 ### Model Implementacyjny
-![Model Implementacyjny](https://raw.githubusercontent.com/filipdbr/bazy_danych_projekt_zaliczeniowy/main/wypozyczalnia_model_implementacyjny.png)
+![Model Implementacyjny](/docs/wypozyczalnia_model_implementacyjny.png)
 
 ## Technologia
 
@@ -34,7 +34,7 @@ Projekt został zrealizowany w **SQL Server**, a do implementacji użyto języka
 
 ## Notebook z opisem projektu
 
-W pliku `Projekt_Baza_Danych_Wypozyczalnia_Sprzetu.ipynb` [(kliknij tutaj aby zobaczyć)](Projekt_Baza_Danych_Wypozyczalnia_Sprzetu.ipynb) znajduje się szczegółowy opis projektu z przykładami zapytań SQL, komentarzami i wizualizacją struktury bazy danych. Notebook ten zawiera krok po kroku:
+W pliku `Projekt_Baza_Danych_Wypozyczalnia_Sprzetu.ipynb` [(kliknij tutaj)](/notebook/Projekt_Baza_Danych_Wypozyczalnia_Sprzetu.ipynb.ipynb) znajduje się szczegółowy opis projektu z przykładami zapytań SQL, komentarzami i wizualizacją struktury bazy danych. Notebook ten zawiera krok po kroku:
 
 - opis założeń projektowych,
 - szczegóły implementacji,
